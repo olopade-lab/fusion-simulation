@@ -65,9 +65,9 @@ RUN wget https://github.com/samtools/samtools/releases/download/1.7/samtools-1.7
 
 
 ## Jellyfish
-RUN wget https://github.com/gmarcais/Jellyfish/releases/download/v2.2.7/jellyfish-2.2.7.tar.gz && \
-    tar xvf jellyfish-2.2.7.tar.gz && \
-    cd jellyfish-2.2.7/ && \
+RUN wget https://github.com/gmarcais/Jellyfish/releases/download/v2.3.0/jellyfish-2.3.0.tar.gz && \
+    tar xvf jellyfish-2.3.0.tar.gz && \
+    cd jellyfish-2.3.0/ && \
     ./configure && make && make install
 
 
