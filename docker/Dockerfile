@@ -100,18 +100,16 @@ RUN STAR_URL="https://github.com/alexdobin/STAR/archive/${STAR_VERSION}.tar.gz" 
             mv $SRC/STAR-${STAR_VERSION}/bin/Linux_x86_64_static/STAR /usr/local/bin
 
 
-# patch for salmon
+## patch for salmon
 WORKDIR $SRC
 RUN ln -sf /usr/local/src/salmon-latest_linux_x86_64/bin/salmon $BIN/.
 
-# blat
+## blat
 RUN wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat -P $BIN && \
     chmod a+x $BIN/blat
 
 
-##########
 ## Trinity
-
 WORKDIR $SRC
 
 ENV TRINITY_VERSION="2.9.1"
@@ -131,6 +129,13 @@ RUN git clone --recursive https://github.com/trinityrnaseq/trinityrnaseq.git && 
 ENV TRINITY_HOME /usr/local/bin/trinityrnaseq
 
 ENV PATH=${TRINITY_HOME}:${PATH}
+
+
+## FusionSimulatorToolkit
+RUN git clone https://github.com/FusionSimulatorToolkit/FusionSimulatorToolkit.git && \
+    cd FusionSimulatorToolkit && \
+    git checkout 4a37321 && \
+    cd ../
 
 
 # cleanup
