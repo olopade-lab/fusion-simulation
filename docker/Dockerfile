@@ -5,17 +5,18 @@ MAINTAINER annawoodard@uchicago.edu
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y gcc g++ perl python automake make \
-                                       wget git curl libdb-dev \
-                                       zlib1g-dev bzip2 libncurses5-dev \
+               wget git curl libdb-dev \
+               zlib1g-dev bzip2 libncurses5-dev \
 				       texlive-latex-base \
-                                       default-jre \
+               default-jre \
 				       python-pip python-dev \
+               vim \
 				       gfortran \
 				       build-essential libghc-zlib-dev libncurses-dev libbz2-dev liblzma-dev libpcre3-dev libxml2-dev \
-				       libblas-dev gfortran git unzip ftp libzmq3-dev nano ftp fort77 libreadline-dev \
+				       libblas-dev gfortran git unzip ftp libzmq3-dev ftp fort77 libreadline-dev \
 				       libcurl4-openssl-dev libx11-dev libxt-dev \
 				       x11-common libcairo2-dev libpng-dev libreadline-dev libjpeg-dev pkg-config libtbb-dev \
-					   cmake rsync libssl-dev tzdata \
+					     cmake rsync libssl-dev tzdata \
 	&& apt-get clean
 
 
