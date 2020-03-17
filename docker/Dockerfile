@@ -141,8 +141,4 @@ RUN git clone https://github.com/FusionSimulatorToolkit/FusionSimulatorToolkit.g
 # cleanup
 WORKDIR $SRC
 RUN rm -r *.tar.gz *.bz2
-
 RUN apt-get clean
-
-## be sure this is last!
-COPY Dockerfile $SRC/Dockerfile
