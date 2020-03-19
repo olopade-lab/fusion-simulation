@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y gcc g++ perl python automake make \
 RUN curl -L https://cpanmin.us | perl - App::cpanminus
 RUN cpanm install DB_File
 RUN cpanm install URI::Escape
+RUN cpanm install PerlIO::gzip
 
 
 ## set up tool config and deployment area
