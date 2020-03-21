@@ -139,6 +139,8 @@ RUN git clone https://github.com/FusionSimulatorToolkit/FusionSimulatorToolkit.g
     git checkout 4a37321 && \
     cd ../
 
+COPY run.sh /usr/local/bin
+RUN chmod a+x /usr/local/bin/run.sh
 
 # cleanup
 WORKDIR $SRC
