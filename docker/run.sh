@@ -24,7 +24,7 @@ FusionSimulatorToolkit/simulate_fusion_trans_expr_vals.pl \
   /output_data/combined.transcripts.fasta \
   > /output_data/target.forSimulation.RSEM.isoforms.results
 
-rsem-simulate-reads /ouput_data/combined.transcripts.fasta.RSEM \
+rsem-simulate-reads /output_data/combined.transcripts.fasta.RSEM \
   /output_data/RSEM/RSEM.stat/RSEM.model \
   /output_data/target.forSimulation.RSEM.isoforms.results \
   0.01 \
