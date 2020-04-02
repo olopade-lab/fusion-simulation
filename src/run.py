@@ -8,7 +8,7 @@ from igsb import config
 parsl.set_stream_logger()
 parsl.load(config)
 
-from apps import generate_fusions, estimate_abundance_and_simulate_reads
+from apps import simulate_fusions
 
 
 parser = argparse.ArgumentParser()
@@ -20,6 +20,7 @@ parser.add_argument("--reference_cdna", help="")
 parser.add_argument("--reference_genome", help="")
 parser.add_argument("--fusions_per_sample", help="fusions to simulate per sample")
 parser.add_argument("--reads_per_sample", help="reads to simulate per sample")
+parser.add_argument("--replicates", type=int, help="reads to simulate per sample")
 parser.add_argument("--out_dir", default=None)
 
 args = parser.parse_args()
@@ -33,35 +34,29 @@ sample_dirs = glob.glob(args.sample_dirs)
 for sample_dir in sample_dirs:
     print(sample_dir)
     sample_id = os.path.split(sample_dir)[-1]
-    output_data = os.path.join(args.out_dir, sample_id)
-    print('submitting tasks for sample {}'.format(sample_id))
+    for replicate in range(0, args.replicates):
+        output_data = os.path.join(args.out_dir, '{}_{}'.format(sample_id, replicate + 1))
+        print('submitting tasks for sample {}, replicate {}'.format(sample_id, replicate + 1))
 
-    fusions = generate_fusions(
-        output_data,
-        args.gencode_annotation,
-        args.reference_genome,
-        args.reference_cdna,
-        args.fusions_per_sample,
-        image='olopadelab/fusion-simulation',
-        stderr=parsl.AUTO_LOGNAME,
-        stdout=parsl.AUTO_LOGNAME
-    )
+        left_fq = glob.glob(os.path.join(sample_dir, args.left))
+        right_fq = glob.glob(os.path.join(sample_dir, args.right))
+        if (len(left_fq) > 1) or (len(right_fq) > 1):
+            raise RuntimeError('Only one input fastq per sample supported!')
 
-    left_fq = glob.glob(os.path.join(sample_dir, args.left))
-    right_fq = glob.glob(os.path.join(sample_dir, args.right))
-    if (len(left_fq) > 1) or (len(right_fq) > 1):
-        raise RuntimeError('Only one input fastq per sample supported!')
+        simulate_fusions(
+            output_data,
+            args.gencode_annotation,
+            args.reference_genome,
+            args.reference_cdna,
+            args.fusions_per_sample,
+            left_fq[0],
+            right_fq[0],
+            args.reads_per_sample,
+            image='olopadelab/fusion-simulation',
+            stderr=parsl.AUTO_LOGNAME,
+            stdout=parsl.AUTO_LOGNAME
+        )
 
-    estimate_abundance_and_simulate_reads(
-        left_fq[0],
-        right_fq[0],
-        output_data,
-        args.reads_per_sample,
-        image='olopadelab/fusion-simulation',
-        stderr=parsl.AUTO_LOGNAME,
-        stdout=parsl.AUTO_LOGNAME,
-        inputs=[fusions]
-    )
 
 parsl.wait_for_current_tasks()
 
