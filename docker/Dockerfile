@@ -112,13 +112,11 @@ RUN wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat -P $BIN
 
 
 ## Trinity
-WORKDIR $SRC
 
 ENV TRINITY_VERSION="2.9.1"
 ENV TRINITY_CO="e806a0f341e4d3917c2b181c4ecd4a4c3f4367fc"
 
 WORKDIR $SRC
-
 RUN git clone --recursive https://github.com/trinityrnaseq/trinityrnaseq.git && \
     cd trinityrnaseq && \
     git checkout ${TRINITY_CO} && \
@@ -129,14 +127,15 @@ RUN git clone --recursive https://github.com/trinityrnaseq/trinityrnaseq.git && 
     cd ../ && rm -r trinityrnaseq
 
 ENV TRINITY_HOME /usr/local/bin/trinityrnaseq
-
 ENV PATH=${TRINITY_HOME}:${PATH}
 
 
 ## FusionSimulatorToolkit
+WORKDIR $SRC
 RUN git clone https://github.com/FusionSimulatorToolkit/FusionSimulatorToolkit.git && \
     cd FusionSimulatorToolkit && \
     git checkout 4a37321 && \
+    ln -s $SRC/FusionSimulatorToolkit $BIN/. && \
     cd ../
 
 COPY run.sh /usr/local/bin
