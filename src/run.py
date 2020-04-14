@@ -1,14 +1,13 @@
 import argparse
 import os
 import glob
+import importlib
 
 import parsl
-from igsb import config
 
 parsl.set_stream_logger()
-parsl.load(config)
 
-from apps import simulate_fusions
+from fusionsimulation.apps import simulate_fusions
 
 
 parser = argparse.ArgumentParser()
