@@ -9,6 +9,8 @@ FusionSimulatorToolkit/FusionTranscriptSimulator \
 
 cat /output_data/fusions.fasta /reference_cdna > /output_data/combined.transcripts.fasta
 
+echo "******** FINISHED SIMULATING TRANSCRIPTS ********"
+
 $TRINITY_HOME/util/align_and_estimate_abundance.pl \
   --transcripts /output_data/combined.transcripts.fasta \
   --est_method RSEM \
@@ -19,10 +21,14 @@ $TRINITY_HOME/util/align_and_estimate_abundance.pl \
   --right /right_fq \
   --output_dir /output_data/RSEM
 
+echo "******** FINISHED ESTIMATING ABUNDANCE ********"
+
 FusionSimulatorToolkit/simulate_fusion_trans_expr_vals.pl \
   /output_data/RSEM/RSEM.isoforms.results \
   /output_data/combined.transcripts.fasta \
   > /output_data/target.forSimulation.RSEM.isoforms.results
+
+echo "******** FINISHED SIMULATING EXPRESSION ********"
 
 rsem-simulate-reads /output_data/combined.transcripts.fasta.RSEM \
   /output_data/RSEM/RSEM.stat/RSEM.model \
@@ -30,6 +36,8 @@ rsem-simulate-reads /output_data/combined.transcripts.fasta.RSEM \
   0.01 \
   $READS_PER_SAMPLE \
   /output_data/sim_reads
+
+echo "******** FINISHED SIMULATING READS ********"
 
 FusionSimulatorToolkit/util/rename_fq_reads_by_target_trans_acc.direct.pl \
   /output_data/combined.transcripts.fasta.RSEM.idx.fa \
