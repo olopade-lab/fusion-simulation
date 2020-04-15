@@ -44,7 +44,7 @@ from parsl.app.app import bash_app
 #         reads_per_sample=reads_per_sample
 #     )
 
-@bash_app
+@bash_app(cache=True)
 def simulate_fusions(
         output_data,
         gencode_annotation,
