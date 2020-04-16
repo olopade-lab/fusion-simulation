@@ -2,6 +2,44 @@ import parsl
 from parsl.app.app import bash_app
 
 
+@python_app(cache=True)
+def parse_gene_id_to_gene_name_map(annotation_gff3_path):
+    import os
+
+    annotation = pd.read_csv(annotation_gff3_path, sep='\t', comment='#', usecols=[8], names=['attributes'])
+    annotation['attributes'] = [i.split(';') for i in annotation.attributes]
+
+    for a in ['gene_id', 'gene_name']:
+        annotation[a] = [y.split('=')[1] for x in annotation.attributes for y in x if y.startswith(a)]
+    annotation.drop(columns=['attributes'], inplace=True)
+    annotation.drop_duplicates(subset='gene_id', inplace=True)
+    annotation = annotation.set_index('gene_id')
+
+    out_path = os.path.splitext(annotation_gff3_path)[0] + '.gene_id_to_gene_name_map.pkl'
+    annotation.to_pickle(out_path)
+
+    return out_path
+
+@python_app(cache=True)
+def make_truth_set(gene_id_to_gene_name_map_path, fasta, sample_id, inputs=[]):
+    import pandas as pd
+
+    annotation = pd.read_pickle(gene_id_to_gene_name_map_path)
+
+    num_lines = sum(1 for line in open(fasta))
+    fusions = pd.read_csv(fasta, sep='\t', skiprows=range(1, num_lines + 1, 2), header=None, names=['gene_id_pair'])
+    fusions.gene_id_pair = [i.split(' ')[0].replace('>', '') for i in fusions.gene_id_pair]
+
+    fusions['left_gene_id'] = [i.split('--')[0] for i in fusions.gene_id_pair]
+    fusions['right_gene_id'] = [i.split('--')[1] for i in fusions.gene_id_pair]
+    fusions = fusions.join(annotation, on='left_gene_id').rename(columns={'gene_name': 'left_gene_name'})
+    fusions = fusions.join(annotation, on='right_gene_id').rename(columns={'gene_name': 'right_gene_name'})
+    fusions['fusion'] = fusions[['left_gene_name', 'right_gene_name']].apply(
+        lambda x: '--'.join([str(i) for i in x]), axis=1)
+    fusions['sample'] = sample
+
+    fusions.to_pickle(os.path.join(os.path.dirname(fasta), 'truth.pkl'))
+
 @bash_app(cache=True)
 def simulate_fusions(
         output_data,
