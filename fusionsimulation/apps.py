@@ -1,48 +1,6 @@
 import parsl
 from parsl.app.app import bash_app
 
-# @bash_app
-# def simulate_fusions(
-#         output_data,
-#         gencode_annotation,
-#         reference_genome,
-#         reference_cdna,
-#         fusions_per_sample,
-#         left_fq,
-#         right_fq,
-#         reads_per_sample,
-#         image='olopadelab/fusion-simulation',
-#         stderr=parsl.AUTO_LOGNAME,
-#         stdout=parsl.AUTO_LOGNAME):
-#     import os
-#     os.makedirs(output_data, exist_ok=True)
-
-#     command = (
-#         'echo $HOSTNAME; '
-#         'docker pull {image}; '
-#         'docker run '
-#         '--rm '
-#         '-v {output_data}:/output_data '
-#         '-v {gencode_annotation}:/gencode_annotation:ro '
-#         '-v {reference_genome}:/reference_genome:ro '
-#         '-v {reference_cdna}:/reference_cdna:ro '
-#         '-v {left_fq}:/left_fq:ro '
-#         '-v {right_fq}:/right_fq:ro '
-#         '-v /cephfs/users/annawoodard/fusion-simulation/docker/run.sh:/run.sh:ro '
-#         '{image} '
-#         '/run.sh {fusions_per_sample} {reads_per_sample}'
-#     )
-#     return command.format(
-#         output_data=output_data,
-#         gencode_annotation=gencode_annotation,
-#         reference_genome=reference_genome,
-#         reference_cdna=reference_cdna,
-#         left_fq=left_fq,
-#         right_fq=right_fq,
-#         image=image,
-#         fusions_per_sample=fusions_per_sample,
-#         reads_per_sample=reads_per_sample
-#     )
 
 @bash_app(cache=True)
 def simulate_fusions(
