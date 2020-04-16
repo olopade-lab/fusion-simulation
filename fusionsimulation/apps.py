@@ -1,10 +1,11 @@
 import parsl
-from parsl.app.app import bash_app
+from parsl.app.app import bash_app, python_app
 
 
 @python_app(cache=True)
 def parse_gene_id_to_gene_name_map(annotation_gff3_path):
     import os
+    import pandas as pd
 
     annotation = pd.read_csv(annotation_gff3_path, sep='\t', comment='#', usecols=[8], names=['attributes'])
     annotation['attributes'] = [i.split(';') for i in annotation.attributes]
@@ -23,6 +24,7 @@ def parse_gene_id_to_gene_name_map(annotation_gff3_path):
 @python_app(cache=True)
 def make_truth_set(gene_id_to_gene_name_map_path, fasta, sample_id, inputs=[]):
     import pandas as pd
+    import os
 
     annotation = pd.read_pickle(gene_id_to_gene_name_map_path)
 
