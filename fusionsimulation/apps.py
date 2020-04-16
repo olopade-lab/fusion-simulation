@@ -22,7 +22,7 @@ def parse_gene_id_to_gene_name_map(annotation_gff3_path):
     return out_path
 
 @python_app(cache=True)
-def make_truth_set(gene_id_to_gene_name_map_path, fasta, sample_id, inputs=[]):
+def make_truth_set(gene_id_to_gene_name_map_path, fasta, sample, inputs=[]):
     import pandas as pd
     import os
 
