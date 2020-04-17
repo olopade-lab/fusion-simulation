@@ -37,23 +37,20 @@ spec.loader.exec_module(module)
 parsl.load(module.config)
 
 if args.container_type == 'singularity':
-        image_path = '{base_dir}/docker/fusion-simulation.sif'.format(base_dir=base_dir)
-        # FIXME may require too much memory on some machines
-        if not os.path.isfile(image_path):
-            print('downloading {}'.format(image_path))
-            subprocess.call(
-                'singularity build {image_path} docker://olopadelab/fusion-simulation'.format(
-                    image_path=image_path),
-                shell=True
-            )
+    image_path = '{base_dir}/docker/fusion-simulation.sif'.format(base_dir=base_dir)
+    # FIXME may require too much memory on some machines
+    if not os.path.isfile(image_path):
+        print('downloading {}'.format(image_path))
+        subprocess.call(
+            'singularity build {image_path} docker://olopadelab/fusion-simulation'.format(
+                image_path=image_path),
+            shell=True
+        )
 
 sample_dirs = glob.glob(args.sample_dirs)
 
 for sample_dir in sample_dirs:
-    print(sample_dir)
     sample_id = os.path.split(sample_dir)[-1]
-    # for replicate in range(0, args.replicates):
-    # output_data = os.path.join(args.out_dir, '{}_{}'.format(sample_id, replicate + 1))
     output_data = os.path.join(args.out_dir, sample_id)
     print('submitting tasks for sample {}'.format(sample_id))
 
