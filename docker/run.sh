@@ -3,13 +3,18 @@
 FUSIONS_PER_SAMPLE=$1
 READS_PER_SAMPLE=$2
 
-FusionSimulatorToolkit/FusionTranscriptSimulator \
-  /gencode_annotation \
-  /reference_genome $FUSIONS_PER_SAMPLE 1> /output_data/fusions.fasta 2> /dev/null
+TRANSCRIPT_SIM_CHECKPOINT=/output_data/transcript_simulation.checkpoint
+if [ -f "$TRANSCRIPT_SIM_CHECKPOINT" ]; then
+  echo "******** FOUND CHECKPOINT; SKIPPING TRANSCRIPT SIMULATION ********"
+else
+  FusionSimulatorToolkit/FusionTranscriptSimulator \
+    /gencode_annotation \
+    /reference_genome $FUSIONS_PER_SAMPLE 1> /output_data/fusions.fasta 2> /dev/null
 
-cat /output_data/fusions.fasta /reference_cdna > /output_data/combined.transcripts.fasta
-
-echo "******** FINISHED SIMULATING TRANSCRIPTS ********"
+  cat /output_data/fusions.fasta /reference_cdna > /output_data/combined.transcripts.fasta
+  touch /output_data/transcript_simulation.checkpoint
+  echo "******** FINISHED SIMULATING TRANSCRIPTS ********"
+fi
 
 $TRINITY_HOME/util/align_and_estimate_abundance.pl \
   --transcripts /output_data/combined.transcripts.fasta \
