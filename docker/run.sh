@@ -47,3 +47,10 @@ echo "******** FINISHED SIMULATING READS ********"
 FusionSimulatorToolkit/util/rename_fq_reads_by_target_trans_acc.direct.pl \
   /output_data/combined.transcripts.fasta.RSEM.idx.fa \
   /output_data/sim_reads_1.fq /output_data/sim_reads_2.fq
+
+echo "******** FINISHED RENAMING READS ********"
+
+gzip /output_data/sim_reads_1.fq
+gzip /output_data/sim_reads_2.fq
+
+echo "******** FINISHED COMPRESSING READS ********"
