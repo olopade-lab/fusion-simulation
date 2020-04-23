@@ -7,7 +7,7 @@ import parsl
 
 parsl.set_stream_logger()
 
-from fusionsimulation.apps import simulate_fusions
+from fusionsimulation.apps import simulate_fusions, parse_gene_id_to_gene_name_map, make_truth_set
 
 
 parser = argparse.ArgumentParser()
@@ -47,8 +47,9 @@ if args.container_type == 'singularity':
             shell=True
         )
 
-sample_dirs = glob.glob(args.sample_dirs)
+gene_id_to_gene_name_map_path = parse_gene_id_to_gene_name_map(args.gencode_annotation)
 
+sample_dirs = glob.glob(args.sample_dirs)
 for sample_dir in sample_dirs:
     sample_id = os.path.split(sample_dir)[-1]
     output_data = os.path.join(args.out_dir, sample_id)
@@ -59,7 +60,7 @@ for sample_dir in sample_dirs:
     if (len(left_fq) > 1) or (len(right_fq) > 1):
         raise RuntimeError('Only one input fastq per sample supported!')
 
-    simulate_fusions(
+    fusions = simulate_fusions(
         output_data,
         args.gencode_annotation,
         args.reference_genome,
@@ -73,6 +74,12 @@ for sample_dir in sample_dirs:
         stdout=parsl.AUTO_LOGNAME
     )
 
+    make_truth_set(
+        gene_id_to_gene_name_map_path,
+        os.path.join(output_data, 'fusions.fasta'),
+        sample_dir.split('/')[-1],
+        inputs=[fusions]
+    )
 
 parsl.wait_for_current_tasks()
 
